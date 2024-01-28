@@ -1,0 +1,21 @@
+{
+  "name": "sanscript",
+  "version": "1.0.0",
+  "description": "Sanscript is a novel programming language designed for ease of use and efficiency, featuring a unique blend of syntax elements aimed at streamlining development. This project will explore its capabilities through static analysis, compiler design, and real-world application examples, documented in detail on GitHub.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "c8 mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/devrai21/Sanscript.git"
+  },
+  "keywords": [],
+  "author": "Dev Raiyani, Anika Bhatnagar, Ria Singh",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/devrai21/Sanscript/issues"
+  },
+  "homepage": "https://github.com/devrai21/Sanscript#readme"
+}
