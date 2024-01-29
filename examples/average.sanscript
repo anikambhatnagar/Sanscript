@@ -1,0 +1,5 @@
+sankhya var1 = 15;
+sankhya var2 = 20;
+sankhya var3 = 25;
+sankhya average = (var1 + var2 + var3)/3;
+likhana(average);
