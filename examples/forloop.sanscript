@@ -1,0 +1,6 @@
+sankhya i = 5;
+(doharaana i; rukana i < 10; i++) {
+
+likhana("hi");
+
+}
