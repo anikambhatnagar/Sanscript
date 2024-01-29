@@ -1,0 +1,11 @@
+prakriya fibonacci(sankyha x) {
+
+    soochee fibonacciNumbers = [0, 1];
+    sankhya i = 2;
+    (doharaana i; i < x; i++;) {
+        fibonacciNumbers[i] = fibonacciNumbers[i - 1] + fibonacciNumbers[i - 2];
+    }
+
+    laana fibonacciNumbers;
+}
+
