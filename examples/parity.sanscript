@@ -1,0 +1,7 @@
+prakriya even(sankyha x) {
+
+laana (x % 2 == 0);
+
+}
+
+likhana(even(4));
