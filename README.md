@@ -1,6 +1,9 @@
 # Sanscript
 Sanscript is a novel programming language designed for ease of use and efficiency, featuring a unique blend of syntax elements aimed at streamlining development. This project will explore its capabilities through static analysis, compiler design, and real-world application examples, documented in detail on GitHub.
 
+![logo][logo]
+[logo]: [https://github.com/devrai21/Sanscript/blob/main/logo/IMG_3131.JPG] "Logo"
+
 ## Story ##
 In the bustling city of Delhi, there once lived a young person who harbored a deep passion for technology. Inspired by the growing demand for computer scientists, this person decided to embark on a journey to learn programming. However, there was a significant hurdle in their path - limited proficiency in English. As this person delved into the world of coding through online tutorials and courses, they found themselves grappling with English-centric programming languages. The syntax and documentation proved to be a formidable barrier, leaving them frustrated and disheartened.
 
