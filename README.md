@@ -12,15 +12,66 @@ In the bustling city of Delhi, there once lived a young person who harbored a de
 
 One day, as they scoured the internet, this person stumbled upon a language called Sanscript. Intrigued by its name, they discovered that Sanscript was designed specifically for those who preferred Hindi over English. The syntax of Sanscript was not only inspired by Hindi but also used Hindi keywords, making it a language that felt accesible to a large percentage of the world!
 
+## Examples
+
+### Printing
+
+| Javascript | Sanscript |
+| --- | ----------- |
+| ```console.log(“Hello world!”) ```| ```likhana("Hello world!");``` |
+|  |  |
+
+### Variables
+
+| Javascript | Sanscript |
+| --- | ----------- |
+| ```var var1 = 15```| ```sankhya var1 = 15;``` |
+|  |  |
+
+
+
+### Loops
+| Javascript |
+| - |
+```javascript
+if (x < 10) {
+  return 1;
+}
+```
+| Sanscript |
+| - |
+```
+sankhya i = 5;
+(doharaana i; rukana i < 10; i++) {
+likhana("hi");
+}
+```
+
+### Functions
+| Javascript |
+| - |
+```javascript
+function even(x){
+    return x % 2 ==  0
+}
+```
+| Sanscript |
+| - |
+```
+prakriya even(sankyha x) {
+laana (x % 2 == 0);
+}
+```
+
 
 
 ## Additional Features ##
-* Based on Javascript (may change)
+* Based on Javascript 
 * Statically Typed
   * Probably will be Strongly Typed
-* Hindi naming convention
+* Hindi keywords (potentially supports Devanagari chars)
 * Boolean operators
 * Loops, logic expressions
-* Will support comments
+* Supports comments
 
   
