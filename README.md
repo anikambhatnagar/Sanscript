@@ -11,58 +11,97 @@ Sanscript is a novel programming language designed for ease of use and efficienc
 In the bustling city of Delhi, there once lived a young person who harbored a deep passion for technology. Inspired by the growing demand for computer scientists, this person decided to embark on a journey to learn programming. However, there was a significant hurdle in their path - limited proficiency in English. As this person delved into the world of coding through online tutorials and courses, they found themselves grappling with English-centric programming languages. The syntax and documentation proved to be a formidable barrier, leaving them frustrated and disheartened.
 
 One day, as they scoured the internet, this person stumbled upon a language called Sanscript. Intrigued by its name, they discovered that Sanscript was designed specifically for those who preferred Hindi over English. The syntax of Sanscript was not only inspired by Hindi but also used Hindi keywords, making it a language that felt accesible to a large percentage of the world!
-
+<table>
+<tr> <th>JavaScript</th><th>Sanscript</th><tr>
+</tr>
+<td>
+  
 ## Examples
 
-### Printing
+```javascript
+console.log(“Hello world!”)
+```
 
-| Javascript | Sanscript |
-| --- | ----------- |
-| ```console.log(“Hello world!”) ```| ```likhana("Hello world!");``` |
-|  |  |
+</td>
+
+<td>
+
+```
+likhana("Hello world!");
+```
+
+</td>
+</table>
 
 ### Variables
 
-| Javascript | Sanscript |
-| --- | ----------- |
-| ```var var1 = 15```| ```sankhya var1 = 15;``` |
-|  |  |
+<table>
+<tr> <th>JavaScript</th><th>Sanscript</th><tr>
+</tr>
+<td>
 
-
-
-### Loops
-| Javascript |
-| - |
 ```javascript
-if (x < 10) {
-  return 1;
-}
+var var1 = 15
 ```
-| Sanscript |
-| - |
+
+</td>
+
+<td>
+
 ```
-sankhya i = 5;
-(doharaana i; rukana i < 10; i++) {
-likhana("hi");
-}
+sankhya var1 = 15;
 ```
+
+</td>
+</table>
 
 ### Functions
-| Javascript |
-| - |
+
+<table>
+<tr> <th>JavaScript</th><th>Sanscript</th><tr>
+</tr>
+<td>
+    
 ```javascript
 function even(x){
     return x % 2 ==  0
 }
 ```
-| Sanscript |
-| - |
+</td>
+<td>
+    
 ```
 prakriya even(sankyha x) {
 laana (x % 2 == 0);
 }
 ```
+</td>
+</table>
 
+
+### Loops
+
+<table>
+<tr> <th>JavaScript</th><th>SussyScript</th><tr>
+</tr>
+<td>
+    
+```javascript
+for (let i = 0; i < 5; i++) {
+    console.log(i);
+}
+```
+</td>
+<td>
+    
+```
+sankhya i = 0;
+(doharaana i; rukana i < 5; i++) {
+likhana(i);
+}
+```
+</td>
+</table>
 
 
 ## Additional Features ##
