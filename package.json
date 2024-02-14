@@ -18,4 +18,12 @@
     "url": "https://github.com/devrai21/Sanscript/issues"
   },
   "homepage": "https://github.com/devrai21/Sanscript#readme"
+  "devDependencies": {
+    "c8": "^7.13.0",
+    "mocha": "^10.2.0"
+  },
+  "dependencies": {
+    "ohm-js": "^16.6.0"
+  }
 }
+
