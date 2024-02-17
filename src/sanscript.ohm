@@ -18,7 +18,7 @@ Program = Statement+
 
   Block = "{" Statement* "}"
   FuncDecl = function id "(" Params ")" Block
-  Call = id "(" Params ")" ";"
+  Call = id "(" Params ")" 
   Loop = while Exp Block
   
   
@@ -49,8 +49,8 @@ Program = Statement+
 
   Params    = ListOf<id, ",">
   Args      = ListOf<Exp, ",">
-  id        = ~keyword letter idchar*
-  idchar    = letter | digit | "_"
+  id        = ~keyword letter withunderscore*
+  withunderscore    = letter | digit | "_"
   function  = "prakriya" ~alnum
   print     = "likhana" ~alnum
   return 	= "laana" ~alnum
@@ -60,7 +60,7 @@ Program = Statement+
   true 		= "saty" ~alnum
   false 	= "asaty" ~alnum
   while 	= "jabaki" ~alnum
-  in        = "andar" ~idchar
+  in        = "andar" ~alnum
   break       = "rukana" ~alnum
 
   
