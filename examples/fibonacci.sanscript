@@ -1,8 +1,7 @@
-prakriya fibonacci(sankyha x) {
+prakriya fibonacci(x) {
 
     soochee fibonacciNumbers = [0, 1];
-    sankhya i = 2;
-    (doharaana i; i < x; i++;) {
+    doharaana i = 2; i < x; i = i + 1; {
         fibonacciNumbers[i] = fibonacciNumbers[i - 1] + fibonacciNumbers[i - 2];
     }
 
