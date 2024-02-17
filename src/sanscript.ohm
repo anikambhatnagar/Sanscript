@@ -19,7 +19,9 @@ Program = Statement+
   Block = "{" Statement* "}"
   FuncDecl = function id "(" Params ")" Block
   Call = id "(" Params ")" 
-  Loop = while Exp Block
+  
+  Loop = while Exp Block 				     -- while
+               | for id "=" Exp ";" break Exp ";" id "=" Exp ";" Block   -- For
   
   
   Exp       = ("-" | "!") Exp7                                      -- unary
@@ -62,11 +64,12 @@ Program = Statement+
   while 	= "jabaki" ~alnum
   in        = "andar" ~alnum
   break       = "rukana" ~alnum
+  for 		= "doharaana" ~alnum
 
   
   
   keyword   = function | else | if | while | else
-             | in | break | return | true | false  
+             | in | break | return | true | false | for 
 
   num = digit+
   stringlit = "\"" (~"\\" ~"\"" ~"\n" any )* "\""
