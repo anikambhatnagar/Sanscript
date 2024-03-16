@@ -117,3 +117,14 @@ likhana(i);
 * Supports comments
 
   
+## Types of Semantic Errors
+- Declaring a variable that has already been declared
+- Return outside of a function
+- Non-boolean value in conditional
+- Non-boolean value in while loop
+- Incorrect number of function parameters
+- Incompatible type comparison
+- "And"/"Or" conditionals not having boolean values
+- Break outside of loops
+- Calling a function or method that is not initialized
+- Use of non-initialized variables
