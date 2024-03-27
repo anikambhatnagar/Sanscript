@@ -1,5 +1,5 @@
 Sanscript {
-Program = Statement+
+  Program = Statement+
   Statement = PrintStatement
             | VariableDecl
             | AssignStatement
@@ -8,20 +8,21 @@ Program = Statement+
             | FuncDecl
             | Call
             | Loop
-  PrintStatement = print Exp ";"
-  VariableDecl = var id "=" (Exp | Exp2) ";"
-  AssignStatement  = id "=" Exp ";"
-  Return = return Exp ";"
-  IfStatement    = if "(" Exp ")" Block else Block                       -- long
-            | if "(" Exp ")" Block else IfStatement                      -- elsif
-            | if "(" Exp ")" Block                                  -- short
 
-  Block = "{" Statement* "}"
-  FuncDecl = function id "(" Params ")" Block
-  Call = id "(" Params ")" 
+  PrintStatement   = print Exp ";"
+  VariableDecl     = var id "=" Exp ";"
+  AssignStatement  = id "=" Exp ";"
+  Return           = return Exp ";"
+  IfStatement      = if "(" Exp ")" Block else Block          -- long
+                   | if "(" Exp ")" Block else IfStatement    -- elsif
+                   | if "(" Exp ")" Block                     -- short
+
+  Block            = "{" Statement* "}"
+  FuncDecl         = function id "(" Params ")" Block
+  Call             = id "(" Params ")" 
   
   Loop = while Exp Block 				     -- while
-               | for id "=" Exp ";" break Exp ";" id "=" Exp ";" Block   -- For
+               | for id "=" Exp ";" break Exp ";" id "=" Exp ";" Block   -- for
   
   
   Exp       = ("-" | "!") Exp7                                      -- unary
@@ -39,10 +40,10 @@ Program = Statement+
             | Exp6
   Exp6      = Exp7 "**" Exp6                                        -- power
             | Exp7
-  Exp7      = num
-            | true
-            | false
-            | Call
+  Exp7      = num                                                   -- num
+            | true                                                  -- true
+            | false                                                 -- false
+            | Call                                                  -- call    
             | id                                                    -- id
             | "(" Exp ")"                                           -- parentheses
             | stringlit
