@@ -45,6 +45,10 @@ export default function analyze(match) {
     must(!context.lookup(name), `Identifier ${name} already declared`, at)
   }
 
+  function mustHaveBeenFound(entity, name, at) {
+    must(entity, `Identifier ${name} not declared`, at)
+  }
+
   const builder = match.matcher.grammar.createSemantics().addOperation("rep", {
     Program(statements) {
       return core.program(statements.children.map((s) => s.rep()))
@@ -65,7 +69,7 @@ export default function analyze(match) {
     AssignStatement(variable, _eq, expression, _semi) {
       const source = expression.rep()
       const target = variable.rep()
-      mustBeAssignable(source, { toType: target.type }, { at: variable })
+      // TODO do your type checking here when ready
       return core.assignment(target, source)
     },
 
@@ -146,7 +150,12 @@ export default function analyze(match) {
       return false
     },
     Exp7_call(call) {},
-    Exp7_id(id) {},
+    Exp7_id(id) {
+      // When an id appears in an expression, it had better have been declared
+      const entity = context.lookup(id.sourceString)
+      mustHaveBeenFound(entity, id.sourceString, { at: id })
+      return entity
+    },
     Exp7_parentheses(_open, exp, _close) {
       return exp.rep()
     },
