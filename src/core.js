@@ -40,3 +40,15 @@ export function returnStatement(expression) {
 export const standardLibrary = Object.freeze({
   दश: variable("दश"),
 })
+
+export function functionDeclaration(fun, params, body) {
+  return { kind: "FunctionDeclaration", fun, params, body }
+}
+
+export function increment(variable) {
+  return { kind: "Increment", variable }
+}
+
+export function decrement(variable) {
+  return { kind: "Decrement", variable }
+}
