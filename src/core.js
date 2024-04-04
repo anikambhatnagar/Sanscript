@@ -31,11 +31,37 @@ export function returnStatement(expression) {
   return { kind: "ReturnStatement", expression }
 }
 
-// You do the rest
+export function typeDeclaration(type) {
+  return { kind: "TypeDeclaration", type }
+}
 
-// Lots more go here
+export const boolType = { kind: "BoolType" }
+export const intType = { kind: "IntType" }
+export const floatType = { kind: "FloatType" }
+export const stringType = { kind: "StringType" }
+export const voidType = { kind: "VoidType" }
+export const anyType = { kind: "AnyType" }
 
-// I mean a lot
+export function structType(name, fields) {
+  return { kind: "StructType", name, fields }
+}
+
+export function functionType(paramTypes, returnType) {
+  return { kind: "FunctionType", paramTypes, returnType }
+}
+
+export function optionalType(baseType) {
+  return { kind: "OptionalType", baseType }
+}
+
+export function increment(variable) {
+  return { kind: "Increment", variable }
+}
+
+export function decrement(variable) {
+  return { kind: "Decrement", variable }
+}
+
 
 export const standardLibrary = Object.freeze({
   दश: variable("दश"),
@@ -45,10 +71,8 @@ export function functionDeclaration(fun, params, body) {
   return { kind: "FunctionDeclaration", fun, params, body }
 }
 
-export function increment(variable) {
-  return { kind: "Increment", variable }
-}
+export const breakStatement = { kind: "BreakStatement" }
 
-export function decrement(variable) {
-  return { kind: "Decrement", variable }
+export function whileStatement(test, body) {
+  return { kind: "WhileStatement", test, body }
 }
