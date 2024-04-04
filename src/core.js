@@ -50,6 +50,10 @@ export function functionType(paramTypes, returnType) {
   return { kind: "FunctionType", paramTypes, returnType }
 }
 
+export function arrayType(baseType) {
+  return { kind: "ArrayType", baseType }
+}
+
 export function optionalType(baseType) {
   return { kind: "OptionalType", baseType }
 }
