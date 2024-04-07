@@ -7,6 +7,9 @@ const syntaxChecks = [
   ["multiple statements", "sankhya average = 1; likhana(average);"],
   ["variable declarations", "sankhya var1 = 15;"],
   ["parentheses", "likhana(83 * ((((((((-(13 / 21))))))))) + 1 - 0);"],
+  ["if", "agar (4<9) {likhana(9);}"]
+  //["longerif","agar (4<9) {likhana(9);}varana {likhana(8);}"]
+  //["while","jabaki saty {var = var+1;}"]
 ]
 
 // Programs with syntax errors that the parser will detect

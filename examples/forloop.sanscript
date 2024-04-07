@@ -1,4 +1,4 @@
-doharaana i = 5; rukana i < 10; i = i + 1 {
+doharaana i = 5; rukana i < 10; i = i + 1; {
 
 likhana("hi");
 

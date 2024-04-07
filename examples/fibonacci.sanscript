@@ -1,4 +1,4 @@
-prakriya fibonacci(x) {
+prakriya fibonacci(sankhya x) {
 
     soochee fibonacciNumbers = [0, 1];
     doharaana i = 2; i < x; i = i + 1; {
