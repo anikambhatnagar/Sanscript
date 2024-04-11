@@ -6,6 +6,12 @@ import analyze from "../src/analyzer.js"
 const semanticChecks = [
   ["hello world", `likhana("नमस्ते दुनिया");`],
   ["variable declarations", "sankhya var1 = 15;"],
+  ["while statement", "jabtaki (5) { likhana 2; }"],
+  [
+    "while statement with variable",
+    "sankhya x = 15; jabtaki (x < 25) { likhana x + 2; x = x + 1; }",
+  ],
+  ["function declaration", "prakriya doubleIt(x) { laana x * 2; }"],
 ]
 
 const semanticErrors = [

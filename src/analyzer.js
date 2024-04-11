@@ -99,13 +99,35 @@ export default function analyze(match) {
 
     IfStatement_short(_if, _open, condition, _close, block) {},
 
-    Block(_open, statements, _close) {},
+    Block(_open, statements, _close) {
+      return statements.children.map((s) => s.rep())
+    },
 
-    FuncDecl(_function, id, _open, params, _close, block) {},
+    FuncDecl(_function, id, _open, params, _close, block) {
+      const functionEntity = core.functionEntity(id.sourceString)
+      mustNotAlreadyBeDeclared(id.sourceString, { at: id })
+      context.add(id.sourceString, functionEntity)
+      context = context.newChildContext({ function: functionEntity })
+      params.rep()
+      const body = block.rep()
+      context = context.parent
+      return core.functionDeclaration(functionEntity, body)
+    },
+
+    Params(params) {
+      for (const p of params.asIteration().children) {
+        mustNotAlreadyBeDeclared(p.sourceString, { at: p })
+        const parameter = core.variable(p.sourceString)
+        context.add(p.sourceString, parameter)
+        context.function.params.push(parameter)
+      }
+    },
 
     Call(id, _open, params, _close) {},
 
-    Loop_while(_while, condition, block) {},
+    Loop_while(_while, condition, block) {
+      return core.whileStatement(condition.rep(), block.rep())
+    },
 
     // for id "=" Exp ";" break Exp ";" id "=" Exp ";" Block
     Loop_for(
@@ -128,17 +150,29 @@ export default function analyze(match) {
 
     Exp_ternary(condition, _questionMark, trueExp, _colon, falseExp) {},
 
-    Exp1_or(left, _or, right) {},
+    Exp1_or(left, _or, right) {
+      return core.binary("||", left.rep(), right.rep())
+    },
 
-    Exp2_and(left, _and, right) {},
+    Exp2_and(left, _and, right) {
+      return core.binary("&&", left.rep(), right.rep())
+    },
 
-    Exp3_compare(left, operator, right) {},
+    Exp3_compare(left, operator, right) {
+      return core.binary(operator.sourceString, left.rep(), right.rep())
+    },
 
-    Exp4_add(left, operator, right) {},
+    Exp4_add(left, operator, right) {
+      return core.binary(operator.sourceString, left.rep(), right.rep())
+    },
 
-    Exp5_multiply(left, operator, right) {},
+    Exp5_multiply(left, operator, right) {
+      return core.binary(operator.sourceString, left.rep(), right.rep())
+    },
 
-    Exp6_power(base, _power, exponent) {},
+    Exp6_power(base, _power, exponent) {
+      return core.binary("**", base.rep(), exponent.rep())
+    },
 
     num(num) {
       return Number(this.sourceString)

@@ -11,7 +11,7 @@ Sanscript {
 
   PrintStatement   = print Exp ";"
   VariableDecl     = var id "=" Exp ";"
-  AssignStatement  = id "=" Exp ";"
+  AssignStatement  = Exp7_id "=" Exp ";"
   Return           = return Exp ";"
   IfStatement      = if "(" Exp ")" Block else Block          -- long
                    | if "(" Exp ")" Block else IfStatement    -- elsif
@@ -62,7 +62,7 @@ Sanscript {
   else		= "varana" ~alnum
   true 		= "saty" ~alnum
   false 	= "asaty" ~alnum
-  while 	= "jabaki" ~alnum
+  while 	= "jabtaki" ~alnum
   in        = "andar" ~alnum
   break       = "rukana" ~alnum
   for 		= "doharaana" ~alnum
