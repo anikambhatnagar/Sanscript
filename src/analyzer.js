@@ -90,7 +90,9 @@ export default function analyze(match) {
       trueBlock,
       _else,
       falseBlock
-    ) {},
+    ) {
+      return core.ifStatement(condition.rep(), trueBlock.rep(), falseBlock.rep())
+    },
 
     IfStatement_elsif(
       _if,
@@ -100,9 +102,13 @@ export default function analyze(match) {
       trueBlock,
       _else,
       elseifStatement
-    ) {},
+    ) {
+      return core.ifStatement(condition.rep(), trueBlock.rep(), elseifStatement.rep().body)
+    },
 
-    IfStatement_short(_if, _open, condition, _close, block) {},
+    IfStatement_short(_if, _open, condition, _close, block) {
+      return core.shortIfStatement(condition.rep(), block.rep())
+    },
 
     Block(_open, statements, _close) {
       return statements.children.map((s) => s.rep())

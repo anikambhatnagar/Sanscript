@@ -13,7 +13,10 @@ const semanticChecks = [
     "sankhya x = 15; jabtaki (x < 25) { likhana x + 2; x = x + 1; }",
   ],
   ["function declaration", "prakriya doubleIt(x) { laana x * 2; }"],
-  ["long return", "prakriya f() { laana saty; }"]
+  ["long return", "prakriya f() { laana saty; }"],
+  ["short if", "agar (1<3) {likhana 3;}"],
+  ["if else", "agar (1<3) {likhana 3;} varana {likhana 4;}"],
+  ["long if", "agar (1<3) {likhana 3;} varana agar (1>3) {likhana 2;} varana {likhana 1;}"]
 ]
 
 const semanticErrors = [
