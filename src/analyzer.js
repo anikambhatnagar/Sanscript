@@ -1,5 +1,10 @@
 import * as core from "./core.js"
 
+const INT = core.intType
+const FLOAT = core.floatType
+const STRING = core.stringType
+const BOOLEAN = core.boolType
+
 class Context {
   // Like most statically-scoped languages, Carlos contexts will contain a
   // map for their locally declared identifiers and a reference to the parent
