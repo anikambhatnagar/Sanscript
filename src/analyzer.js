@@ -177,10 +177,10 @@ export default function analyze(match) {
     num(num) {
       return Number(this.sourceString)
     },
-    true(_true) {
+    true(_) {
       return true
     },
-    false(_false) {
+    false(_) {
       return false
     },
     Exp7_call(call) {},
