@@ -1,0 +1,8 @@
+sankhya x = 5;
+agar (x > 10) {
+  likhana "x is greater than 10";
+} varana agar (x < 10) {
+  likhana "x is less than 10";
+} varana {
+  likhana "x is equal to 10";
+}

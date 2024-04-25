@@ -1,0 +1,2 @@
+sankhya x = 5;
+sankhya y = x > 10 ? 20 : 30;

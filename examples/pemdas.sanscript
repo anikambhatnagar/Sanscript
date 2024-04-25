@@ -1,0 +1,4 @@
+sankhya x = 1;
+sankhya y = 2;
+sankhya z = (x + y) * (x - y) / 2;
+likhana(z);
