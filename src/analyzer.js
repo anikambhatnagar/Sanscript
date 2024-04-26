@@ -133,15 +133,22 @@ export default function analyze(match) {
         context.function.params.push(parameter)
       }
     },
-
-    Call(id, _open, params, _close) {},
-
+/*
+    Call(id, _open, expList, _close) {
+      // ids used in calls must have already been declared and must be
+      // bound to function entities, not to variable entities.
+      const callee = context.lookup(id.sourceString)
+      mustHaveBeenFound(callee, id.sourceString, { at: id })
+      const args = expList.asIteration().children.map(arg => arg.rep())
+      return core.call(callee, args)
+    },
+*/
     Loop_while(_while, condition, block) {
       return core.whileStatement(condition.rep(), block.rep())
     },
 
     // for id "=" Exp ";" break Exp ";" id "=" Exp ";" Block
-    Loop_for(
+    /*Loop_for(
       _for,
       loopVar,
       _eq,
@@ -155,11 +162,31 @@ export default function analyze(match) {
       updateExp,
       _semi3,
       block
-    ) {},
+    ) {
+      return core.forStatement(
+        loopVar.sourceString,
+        startExp.rep(),
+        breakCondition.rep(),
+        updateVar && updateVar.sourceString,
+        updateExp && updateExp.rep(),
+        block.rep()
+      )
+    }, 
 
-    Exp_unary(operator, exp) {},
 
-    Exp_ternary(condition, _questionMark, trueExp, _colon, falseExp) {},
+    */
+
+    Exp_unary(operator, exp) {
+      return core.unaryminusStatement(operator.sourceString, exp.rep())
+    },
+
+    Exp_ternary(condition, _questionMark, trueExp, _colon, falseExp) {
+      return core.ternaryStatement(
+        condition.rep(),
+        trueExp.rep(),
+        falseExp.rep()
+        )
+    },
 
     Exp1_or(left, _or, right) {
       return core.binary("||", left.rep(), right.rep())
@@ -194,7 +221,7 @@ export default function analyze(match) {
     false(_) {
       return false
     },
-    Exp7_call(call) {},
+    //Exp7_call(call) {},
     Exp7_id(id) {
       // When an id appears in an expression, it had better have been declared
       const entity = context.lookup(id.sourceString)

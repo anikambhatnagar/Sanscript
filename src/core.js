@@ -23,6 +23,14 @@ export function ifStatement(test, consequent, alternate) {
   return { kind: "IfStatement", test, consequent, alternate }
 }
 
+export function ternaryStatement(condition, trueExp, falseExp){
+  return {kind: "TernaryStatement", condition, trueExp, falseExp}
+}
+
+export function unaryminusStatement(operand, exp) {
+  return {kind: "UnaryMinusStatement", operand, exp}
+}
+
 export function shortIfStatement(test, consequent) {
   return { kind: "ShortIfStatement", test, consequent }
 }
@@ -31,6 +39,11 @@ export function returnStatement(expression) {
   return { kind: "ReturnStatement", expression }
 }
 
+/*
+export function call(callee, args) {
+  return { kind: "CallStatement", callee, args }
+}
+*/
 // export function typeDeclaration(type) {
 //   return { kind: "TypeDeclaration", type }
 // }
@@ -72,6 +85,10 @@ export function whileStatement(test, body) {
   return { kind: "WhileStatement", test, body }
 }
 
+/*export function forStatement(init, test, update, body) {
+  return { kind: "ForStatement", init, test, update, body }
+}
+*/
 export function binary(op, left, right) {
   return { kind: "BinaryExpression", op, left, right }
 }
