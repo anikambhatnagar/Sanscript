@@ -22,7 +22,7 @@ const semanticChecks = [
   ["or operator", "sankhya x = 4; likhana((x < 10) || (x>10));"],
   ["ternary", "sankhya x = 5; sankhya y = x > 10 ? 20 : 30;"],
   ["unary minus", "sankhya x = 5; sankhya y = -x;"],
-  //["function call", "prakriya even(x) {laana (x % 2 == 0); } sankhya x = 4; likhana(even(x));"]
+  ["function call", "prakriya even(x) {laana (x % 2 == 0); } sankhya x = 4; likhana(even(x));"],
   // :(  The one above fails
   ["return type mismatch", "prakriya f() { laana asaty; }"]   // dont have types yet, so this causes an error
 
