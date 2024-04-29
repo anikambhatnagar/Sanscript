@@ -12,8 +12,8 @@ const fixtures = [
   {
     name: "small",
     source: `
-      sankhya x = 3 * 7;
-      sankhya y = 4-3;
+      sankhya ginti x = 3 * 7;
+      sankhya ginti y = 4-3;
       likhana("hello");
     `,
     // above produces undefined for likhana idk why
@@ -26,9 +26,9 @@ const fixtures = [
   {
     name: "while",
     source: `
-      sankhya x = 0;
+      sankhya ginti x = 0;
       jabtaki (x < 5) {
-        sankhya y = 0;
+        sankhya ginti y = 0;
         jabtaki (y < 5) {
           likhana (x * y);
           y = y + 1;

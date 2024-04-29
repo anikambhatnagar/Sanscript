@@ -4,9 +4,9 @@ import parse from "../src/parser.js"
 // Programs expected to be syntactically correct
 const syntaxChecks = [
   ["hello world", `likhana("hello world");`],
-  ["multiple statements", "sankhya average = 1; likhana(average);"],
-  ["variable declarations", "sankhya var1 = 15;"],
-  ["parentheses", "likhana(83 * ((((((((-(13 / 21))))))))) + 1 - 0);"],
+  ["multiple statements", "sankhya ginti average = 1; likhana(average);"],
+  ["variable declarations", "sankhya ginti var1 = 15;"],
+  ["parentheses", "likhana(83 * ((((((((0-(13 / 21))))))))) + 1 - 0);"],
   ["if", "agar (4<9) {likhana(9);}"]
   //["longerif","agar (4<9) {likhana(9);}varana {likhana(8);}"]
   //["while","jabaki saty {var = var+1;}"]
@@ -14,7 +14,7 @@ const syntaxChecks = [
 
 // Programs with syntax errors that the parser will detect
 const syntaxErrors = [
-  ["non-letter in an identifier", "sankhya ab😭c = 2;", /Line 1, col 11:/],
+  ["non-letter in an identifier", "sankhya ginti ab😭c = 2;", /Line 1, col 17:/],
 ]
 
 describe("The parser", () => {
