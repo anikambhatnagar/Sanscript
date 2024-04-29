@@ -6,12 +6,6 @@ const STRING = core.stringType
 const BOOLEAN = core.boolType
 
 class Context {
-  // Like most statically-scoped languages, Carlos contexts will contain a
-  // map for their locally declared identifiers and a reference to the parent
-  // context. The parent of the global context is null. In addition, the
-  // context records whether analysis is current within a loop (so we can
-  // properly check break statements), and reference to the current function
-  // (so we can properly check return statements).
   constructor({
     parent = null,
     locals = new Map(),
@@ -20,17 +14,21 @@ class Context {
   }) {
     Object.assign(this, { parent, locals, inLoop, function: f })
   }
+  
   add(name, entity) {
     this.locals.set(name, entity)
   }
+  
   lookup(name) {
     return this.locals.get(name) || this.parent?.lookup(name)
   }
+  
   static root() {
     return new Context({
       locals: new Map(Object.entries(core.standardLibrary)),
     })
   }
+  
   newChildContext(props) {
     return new Context({ ...this, ...props, parent: this, locals: new Map() })
   }
@@ -46,8 +44,33 @@ export default function analyze(match) {
     }
   }
 
+  function getType(token) {
+    if (typeof token === 'number' || (typeof token === 'string' && token.match(/^\d+$/))) {
+      return "ginti"
+    }
+    else if (token === "saty" || token === "asaty") {
+      return "babla"
+    }
+    else if (typeof token === 'string' && token.startsWith('"') && token.endsWith('"')) {
+      return "dhaga"
+    }
+    else {
+      return null
+    }
+  }  
+
   function mustNotAlreadyBeDeclared(name, at) {
     must(!context.lookup(name), `Identifier ${name} already declared`, at)
+  }
+
+  function ternary(condition, truePart, falsePart) {
+    if (condition.type !== "babla") { 
+        throw new Error("Ternary condition must be a boolean")
+    }
+    if (truePart.type !== falsePart.type) {
+        throw new Error("Ternary branches must return the same type")
+    }
+    return condition.value ? truePart : falsePart
   }
 
   function mustHaveBeenFound(entity, name, at) {
@@ -56,53 +79,74 @@ export default function analyze(match) {
 
   const builder = match.matcher.grammar.createSemantics().addOperation("rep", {
     Program(statements) {
-      return core.program(statements.children.map((s) => s.rep()))
+      return core.program(statements.children.map(s => s.rep()))
     },
 
     PrintStatement(_print, exp, _semi) {
       return core.printStatement(exp.rep())
     },
 
-    VariableDecl(_var, id, _eq, expression, _semi) {
+    VariableDecl(_var, type, id, _eq, expression, _semi) {
       const initializer = expression.rep()
-      const variable = core.variable(id.sourceString)
+      const variableType = type.sourceString
+      const variable = core.variable(id.sourceString, variableType)
       mustNotAlreadyBeDeclared(id.sourceString, { at: id })
+      const initType = initializer.type || getType(initializer) 
+      must(variableType === initType, `Type mismatch: expected ${variableType}, got ${initType}`, { at: expression })
       context.add(id.sourceString, variable)
       return core.variableDeclaration(variable, initializer)
     },
 
-    AssignStatement(variable, _eq, expression, _semi) {
-      const source = expression.rep()
-      const target = variable.rep()
-      // TODO do your type checking here when ready
-      return core.assignment(target, source)
+    Params(params) {
+      return params.rep()
     },
+  
+    TypedParams(typedParams) {
+      return typedParams.rep()
+    },
+  
+    Args(args) {
+      return args.rep()
+    },
+  
+    NonemptyListOf(first, _sep, rest) {
+      return [first.rep()].concat(rest.rep())
+    },
+  
+    EmptyListOf() {
+      return []
+    },
+  
+    TypedParam(type, id) {
+      return {
+        type: type.rep(),
+        identifier: id.rep()
+      }
+    },
+
+    AssignStatement(variable, _eq, expression, _semi) {
+      const target = variable.rep()
+      const source = expression.rep()
+      const sourceType = source.type
+      const targetVariable = context.lookup(variable.sourceString)
+      must(targetVariable, `Variable ${variable.sourceString} not found`, { at: variable })
+      const targetType = targetVariable.type
+      must(targetType === sourceType, `Type mismatch in assignment: expected ${targetType}, got ${sourceType}`, { at: variable })
+      return { type: targetType, value: source.value }
+    },    
 
     Return(_return, expression, _semi) {
-      return core.returnStatement(expression.rep())
+      const retExpr = expression.rep()
+      const returnType = getType(retExpr)
+      must(context.function.returnType === returnType, `Return type mismatch: expected ${context.function.returnType}, got ${returnType}`, { at: expression })
+      return core.returnStatement(retExpr)
     },
 
-    IfStatement_long(
-      _if,
-      _open,
-      condition,
-      _close,
-      trueBlock,
-      _else,
-      falseBlock
-    ) {
+    IfStatement_long(_if, _open, condition, _close, trueBlock, _else, falseBlock) {
       return core.ifStatement(condition.rep(), trueBlock.rep(), falseBlock.rep())
     },
 
-    IfStatement_elsif(
-      _if,
-      _open,
-      condition,
-      _close,
-      trueBlock,
-      _else,
-      elseifStatement
-    ) {
+    IfStatement_elsif(_if, _open, condition, _close, trueBlock, _else, elseifStatement) {
       return core.ifStatement(condition.rep(), trueBlock.rep(), elseifStatement.rep().body)
     },
 
@@ -110,12 +154,8 @@ export default function analyze(match) {
       return core.shortIfStatement(condition.rep(), block.rep())
     },
 
-    Block(_open, statements, _close) {
-      return statements.children.map((s) => s.rep())
-    },
-
-    FuncDecl(_function, id, _open, params, _close, block) {
-      const functionEntity = core.functionEntity(id.sourceString)
+    FuncDecl(_function, id, _open, params, _close, _colon, returnType, block) {
+      const functionEntity = core.functionEntity(id.sourceString, returnType.sourceString)
       mustNotAlreadyBeDeclared(id.sourceString, { at: id })
       context.add(id.sourceString, functionEntity)
       context = context.newChildContext({ function: functionEntity })
@@ -126,116 +166,89 @@ export default function analyze(match) {
     },
 
     Params(params) {
-      for (const p of params.asIteration().children) {
-        mustNotAlreadyBeDeclared(p.sourceString, { at: p })
-        const parameter = core.variable(p.sourceString)
-        context.add(p.sourceString, parameter)
+      for (const p of params.children) {
+        const paramType = p.children[0].sourceString
+        const paramName = p.children[1].sourceString
+        mustNotAlreadyBeDeclared(paramName, { at: p })
+        const parameter = core.variable(paramName, paramType)
+        context.add(paramName, parameter)
         context.function.params.push(parameter)
       }
     },
-/*
-    Call(id, _open, expList, _close) {
-      // ids used in calls must have already been declared and must be
-      // bound to function entities, not to variable entities.
-      const callee = context.lookup(id.sourceString)
-      mustHaveBeenFound(callee, id.sourceString, { at: id })
-      const args = expList.asIteration().children.map(arg => arg.rep())
-      return core.call(callee, args)
+
+    // Implementations for specific expressions:
+
+    Block(_open, statements, _close) {
+      let previousContext = context
+      context = context.newChildContext({})
+      const results = statements.children.map(s => s.rep())
+      context = previousContext
+      return results
     },
-*/
-    Loop_while(_while, condition, block) {
-      return core.whileStatement(condition.rep(), block.rep())
+    
+    Loop_while(_while, _open, condition, _close, block) {
+      let conditionResult = condition.rep()
+      let blockResult = block.rep()
+      return core.whileStatement(conditionResult, blockResult)
     },
 
-    // for id "=" Exp ";" break Exp ";" id "=" Exp ";" Block
-    /*Loop_for(
-      _for,
-      loopVar,
-      _eq,
-      startExp,
-      _semi1,
-      _breakWord,
-      breakCondition,
-      _semi2,
-      updateVar,
-      _eq2,
-      updateExp,
-      _semi3,
-      block
-    ) {
-      return core.forStatement(
-        loopVar.sourceString,
-        startExp.rep(),
-        breakCondition.rep(),
-        updateVar && updateVar.sourceString,
-        updateExp && updateExp.rep(),
-        block.rep()
-      )
+    Exp(expression) {
+      return expression.rep()
+    },
+
+    Exp_ternary(condition, _q, trueExp, _c, falseExp) {
+      return core.ternary(condition.rep(), trueExp.rep(), falseExp.rep())
+    },
+
+    Exp1_or(left, _op, right) {
+      return core.binary('||', left.rep(), right.rep())
+    },
+  
+    Exp2_and(left, _op, right) {
+      return core.binary('&&', left.rep(), right.rep())
     }, 
-
-
-    */
-
-    Exp_unary(operator, exp) {
-      return core.unaryminusStatement(operator.sourceString, exp.rep())
-    },
-
-    Exp_ternary(condition, _questionMark, trueExp, _colon, falseExp) {
-      return core.ternaryStatement(
-        condition.rep(),
-        trueExp.rep(),
-        falseExp.rep()
-        )
-    },
-
-    Exp1_or(left, _or, right) {
-      return core.binary("||", left.rep(), right.rep())
-    },
-
-    Exp2_and(left, _and, right) {
-      return core.binary("&&", left.rep(), right.rep())
-    },
-
+    
     Exp3_compare(left, operator, right) {
       return core.binary(operator.sourceString, left.rep(), right.rep())
     },
 
-    Exp4_add(left, operator, right) {
-      return core.binary(operator.sourceString, left.rep(), right.rep())
+    Exp4_add(left, op, right) {
+      return core.binary(op.sourceString, left.rep(), right.rep())
     },
-
-    Exp5_multiply(left, operator, right) {
-      return core.binary(operator.sourceString, left.rep(), right.rep())
+  
+    Exp5_multiply(left, op, right) {
+      return core.binary(op.sourceString, left.rep(), right.rep())
     },
-
-    Exp6_power(base, _power, exponent) {
-      return core.binary("**", base.rep(), exponent.rep())
+  
+    Exp6_power(base, _op, exponent) {
+      return core.binary('**', base.rep(), exponent.rep())
     },
-
-    num(num) {
-      return Number(this.sourceString)
-    },
-    true(_) {
-      return true
-    },
-    false(_) {
-      return false
-    },
-    //Exp7_call(call) {},
-    Exp7_id(id) {
-      // When an id appears in an expression, it had better have been declared
-      const entity = context.lookup(id.sourceString)
-      mustHaveBeenFound(entity, id.sourceString, { at: id })
-      return entity
-    },
+    
     Exp7_parentheses(_open, exp, _close) {
       return exp.rep()
+    }, 
+
+    stringlit(_open, chars, _close) {
+      return chars.sourceString
     },
-    stringlit(_openQuote, _chars, _closeQuote) {
-      // Sanscript strings will be represented as plain JS strings, including
-      // the quotation marks
+
+    num(_) {
+      return Number(this.sourceString)
+    },
+
+    id(letter, alnums) {
+      return letter.sourceString + alnums.sourceString
+    },
+
+    _terminal() {
       return this.sourceString
     },
+
+    _iter(...children) {
+      return children.map(child => child.rep())
+    }
+
   })
+
   return builder(match).rep()
 }

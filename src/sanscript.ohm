@@ -10,7 +10,7 @@ Sanscript {
             | Loop
 
   PrintStatement   = print Exp ";"
-  VariableDecl     = var id "=" Exp ";"
+  VariableDecl     = var Type id "=" Exp ";"
   AssignStatement  = Exp7_id "=" Exp ";"
   Return           = return Exp ";"
   IfStatement      = if "(" Exp ")" Block else Block          -- long
@@ -18,59 +18,58 @@ Sanscript {
                    | if "(" Exp ")" Block                     -- short
 
   Block            = "{" Statement* "}"
-  FuncDecl         = function id "(" Params ")" Block
-  Call             = id "(" Params ")" 
+  FuncDecl         = function id "(" TypedParams ")" ":" Type Block
+  Call             = id "(" Args ")" 
   
-  Loop = while Exp Block 				     -- while
-               | for id "=" Exp ";" break Exp ";" id "=" Exp ";" Block   -- for
+  Loop = while "(" Exp ")" Block                              -- while
+       | for id "=" Exp ";" Exp ";" id "=" Exp ";" Block      -- for
   
-  
-  Exp       = ("-" | "!") Exp7                                      -- unary
-            | Exp1 "?" Exp1 ":" Exp                                 -- ternary
+  Exp       = Exp1 "?" Exp1 ":" Exp                           -- ternary
             | Exp1
-  Exp1      = Exp1 "||" Exp2                                        -- or
+  Exp1      = Exp1 "||" Exp2                                  -- or
             | Exp2
-  Exp2      = Exp2 "&&" Exp3                                        -- and
+  Exp2      = Exp2 "&&" Exp3                                  -- and
             | Exp3
-  Exp3      = Exp4 ("<="|"<"|"=="|"!="|">="|">") Exp4               -- compare
+  Exp3      = Exp4 ("<="|"<"|"=="|"!="|">="|">") Exp4         -- compare
             | Exp4  
-  Exp4      = Exp4 ("+" | "-") Exp5                                 -- add
+  Exp4      = Exp4 ("+" | "-") Exp5                           -- add
             | Exp5
-  Exp5      = Exp5 ("*" | "/" | "%") Exp6                           -- multiply
+  Exp5      = Exp5 ("*" | "/" | "%") Exp6                     -- multiply
             | Exp6
-  Exp6      = Exp7 "**" Exp6                                        -- power
+  Exp6      = Exp7 "**" Exp6                                  -- power
             | Exp7
-  Exp7      = num                                                   -- num
-            | true                                                  -- true
-            | false                                                 -- false
-            | Call                                                  -- call    
-            | id                                                    -- id
-            | "(" Exp ")"                                           -- parentheses
+  Exp7      = num                                             -- num
+            | true                                            -- true
+            | false                                           -- false
+            | Call                                            -- call    
+            | id                                              -- id
+            | "(" Exp ")"                                     -- parentheses
             | stringlit
- 
-
 
   Params    = ListOf<id, ",">
+  TypedParam = Type id
+  TypedParams = ListOf<TypedParam, ",">
   Args      = ListOf<Exp, ",">
   id        = ~keyword letter withunderscore*
-  withunderscore    = letter | digit | "_"
+  withunderscore = letter | digit | "_"
+  
+  Type      = "ginti"   -- number
+            | "babla"     -- boolean
+            | "dhaga"     -- string
+
   function  = "prakriya" ~alnum
   print     = "likhana" ~alnum
-  return 	= "laana" ~alnum
-  var 		= "sankhya" ~alnum
-  if 		= "agar" ~alnum
-  else		= "varana" ~alnum
-  true 		= "saty" ~alnum
-  false 	= "asaty" ~alnum
-  while 	= "jabtaki" ~alnum
-  in        = "andar" ~alnum
-  break       = "rukana" ~alnum
-  for 		= "doharaana" ~alnum
-
+  return    = "laana" ~alnum
+  var       = "sankhya" ~alnum
+  if        = "agar" ~alnum
+  else      = "varana" ~alnum
+  true      = "saty" ~alnum
+  false     = "asaty" ~alnum
+  while     = "jabtaki" ~alnum
+  for       = "doharaana" ~alnum
   
-  
-  keyword   = function | else | if | while | else
-             | in | break | return | true | false | for 
+  keyword   = function | var | if | else | while | for
+            | return | true | false 
 
   num = digit+
   stringlit = "\"" (~"\\" ~"\"" ~"\n" any )* "\""

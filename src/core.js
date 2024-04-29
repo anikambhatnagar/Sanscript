@@ -6,9 +6,8 @@ export function variableDeclaration(variable, initializer) {
   return { kind: "VariableDeclaration", variable, initializer }
 }
 
-// Someday the language will get types, so make it happen here (like Carlos)
-export function variable(name) {
-  return { kind: "Variable", name }
+export function variable(name, type) {
+  return { kind: "Variable", name, type }
 }
 
 export function printStatement(expression) {
@@ -23,8 +22,17 @@ export function ifStatement(test, consequent, alternate) {
   return { kind: "IfStatement", test, consequent, alternate }
 }
 
-export function ternaryStatement(condition, trueExp, falseExp){
-  return {kind: "TernaryStatement", condition, trueExp, falseExp}
+//export function ternaryStatement(condition, trueExp, falseExp){
+  //return {kind: "TernaryStatement", condition, trueExp, falseExp}
+//}
+export function ternary(condition, truePart, falsePart) {
+  if (condition.type !== "babla") {
+    throw new Error("Ternary condition must be a boolean");
+  }
+  if (truePart.type !== falsePart.type) {
+    throw new Error("Ternary branches must return the same type");
+  }
+  return condition.value ? truePart : falsePart;
 }
 
 export function unaryminusStatement(operand, exp) {
@@ -38,15 +46,6 @@ export function shortIfStatement(test, consequent) {
 export function returnStatement(expression) {
   return { kind: "ReturnStatement", expression }
 }
-
-/*
-export function call(callee, args) {
-  return { kind: "CallStatement", callee, args }
-}
-*/
-// export function typeDeclaration(type) {
-//   return { kind: "TypeDeclaration", type }
-// }
 
 export const boolType = { kind: "BoolType" }
 export const intType = { kind: "IntType" }
@@ -75,8 +74,8 @@ export function functionDeclaration(fun, body) {
   return { kind: "FunctionDeclaration", fun, body }
 }
 
-export function functionEntity(name) {
-  return { kind: "Function", name, params: [] }
+export function functionEntity(name, returnType, paramTypes = []) {
+  return { kind: "Function", name, params: [], returnType, paramTypes }
 }
 
 export const breakStatement = { kind: "BreakStatement" }
@@ -90,6 +89,9 @@ export function whileStatement(test, body) {
 }
 */
 export function binary(op, left, right) {
+  if (left.type !== right.type) {
+    throw new Error("Type error: Operand types do not match.");
+  }
   return { kind: "BinaryExpression", op, left, right }
 }
 
