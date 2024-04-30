@@ -23,20 +23,20 @@ export function ifStatement(test, consequent, alternate) {
 }
 
 //export function ternaryStatement(condition, trueExp, falseExp){
-  //return {kind: "TernaryStatement", condition, trueExp, falseExp}
+//return {kind: "TernaryStatement", condition, trueExp, falseExp}
 //}
 export function ternary(condition, truePart, falsePart) {
   if (condition.type !== "babla") {
-    throw new Error("Ternary condition must be a boolean");
+    throw new Error("Ternary condition must be a boolean")
   }
   if (truePart.type !== falsePart.type) {
-    throw new Error("Ternary branches must return the same type");
+    throw new Error("Ternary branches must return the same type")
   }
-  return condition.value ? truePart : falsePart;
+  return condition.value ? truePart : falsePart
 }
 
 export function unaryminusStatement(operand, exp) {
-  return {kind: "UnaryMinusStatement", operand, exp}
+  return { kind: "UnaryMinusStatement", operand, exp }
 }
 
 export function shortIfStatement(test, consequent) {
@@ -88,11 +88,11 @@ export function whileStatement(test, body) {
   return { kind: "ForStatement", init, test, update, body }
 }
 */
-export function binary(op, left, right) {
-  if (left.type !== right.type) {
-    throw new Error("Type error: Operand types do not match.");
-  }
-  return { kind: "BinaryExpression", op, left, right }
+export function binary(op, left, right, type) {
+  // if (left.type !== right.type) {
+  //   throw new Error("Type error: Operand types do not match.")
+  // }
+  return { kind: "BinaryExpression", op, left, right, type }
 }
 
 export const standardLibrary = Object.freeze({

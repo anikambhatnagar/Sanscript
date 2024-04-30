@@ -14,21 +14,21 @@ class Context {
   }) {
     Object.assign(this, { parent, locals, inLoop, function: f })
   }
-  
+
   add(name, entity) {
     this.locals.set(name, entity)
   }
-  
+
   lookup(name) {
     return this.locals.get(name) || this.parent?.lookup(name)
   }
-  
+
   static root() {
     return new Context({
       locals: new Map(Object.entries(core.standardLibrary)),
     })
   }
-  
+
   newChildContext(props) {
     return new Context({ ...this, ...props, parent: this, locals: new Map() })
   }
@@ -45,30 +45,34 @@ export default function analyze(match) {
   }
 
   function getType(token) {
-    if (typeof token === 'number' || (typeof token === 'string' && token.match(/^\d+$/))) {
+    if (
+      typeof token === "number" ||
+      (typeof token === "string" && token.match(/^\d+$/))
+    ) {
       return "ginti"
-    }
-    else if (token === "saty" || token === "asaty") {
+    } else if (token === "saty" || token === "asaty") {
       return "babla"
-    }
-    else if (typeof token === 'string' && token.startsWith('"') && token.endsWith('"')) {
+    } else if (
+      typeof token === "string" &&
+      token.startsWith('"') &&
+      token.endsWith('"')
+    ) {
       return "dhaga"
-    }
-    else {
+    } else {
       return null
     }
-  }  
+  }
 
   function mustNotAlreadyBeDeclared(name, at) {
     must(!context.lookup(name), `Identifier ${name} already declared`, at)
   }
 
   function ternary(condition, truePart, falsePart) {
-    if (condition.type !== "babla") { 
-        throw new Error("Ternary condition must be a boolean")
+    if (condition.type !== "babla") {
+      throw new Error("Ternary condition must be a boolean")
     }
     if (truePart.type !== falsePart.type) {
-        throw new Error("Ternary branches must return the same type")
+      throw new Error("Ternary branches must return the same type")
     }
     return condition.value ? truePart : falsePart
   }
@@ -79,7 +83,7 @@ export default function analyze(match) {
 
   const builder = match.matcher.grammar.createSemantics().addOperation("rep", {
     Program(statements) {
-      return core.program(statements.children.map(s => s.rep()))
+      return core.program(statements.children.map((s) => s.rep()))
     },
 
     PrintStatement(_print, exp, _semi) {
@@ -91,8 +95,12 @@ export default function analyze(match) {
       const variableType = type.sourceString
       const variable = core.variable(id.sourceString, variableType)
       mustNotAlreadyBeDeclared(id.sourceString, { at: id })
-      const initType = initializer.type || getType(initializer) 
-      must(variableType === initType, `Type mismatch: expected ${variableType}, got ${initType}`, { at: expression })
+      const initType = initializer.type || getType(initializer)
+      must(
+        variableType === initType,
+        `Type mismatch: expected ${variableType}, got ${initType}`,
+        { at: expression }
+      )
       context.add(id.sourceString, variable)
       return core.variableDeclaration(variable, initializer)
     },
@@ -100,27 +108,27 @@ export default function analyze(match) {
     Params(params) {
       return params.rep()
     },
-  
+
     TypedParams(typedParams) {
       return typedParams.rep()
     },
-  
+
     Args(args) {
       return args.rep()
     },
-  
+
     NonemptyListOf(first, _sep, rest) {
       return [first.rep()].concat(rest.rep())
     },
-  
+
     EmptyListOf() {
       return []
     },
-  
+
     TypedParam(type, id) {
       return {
         type: type.rep(),
-        identifier: id.rep()
+        identifier: id.rep(),
       }
     },
 
@@ -129,25 +137,59 @@ export default function analyze(match) {
       const source = expression.rep()
       const sourceType = source.type
       const targetVariable = context.lookup(variable.sourceString)
-      must(targetVariable, `Variable ${variable.sourceString} not found`, { at: variable })
+      must(targetVariable, `Variable ${variable.sourceString} not found`, {
+        at: variable,
+      })
       const targetType = targetVariable.type
-      must(targetType === sourceType, `Type mismatch in assignment: expected ${targetType}, got ${sourceType}`, { at: variable })
+      must(
+        targetType === sourceType,
+        `Type mismatch in assignment: expected ${targetType}, got ${sourceType}`,
+        { at: variable }
+      )
       return { type: targetType, value: source.value }
-    },    
+    },
 
     Return(_return, expression, _semi) {
       const retExpr = expression.rep()
-      const returnType = getType(retExpr)
-      must(context.function.returnType === returnType, `Return type mismatch: expected ${context.function.returnType}, got ${returnType}`, { at: expression })
+      const returnType = retExpr.type ?? getType(retExpr)
+      must(
+        context.function.returnType === returnType,
+        `Return type mismatch: expected ${context.function.returnType}, got ${returnType}`,
+        { at: expression }
+      )
       return core.returnStatement(retExpr)
     },
 
-    IfStatement_long(_if, _open, condition, _close, trueBlock, _else, falseBlock) {
-      return core.ifStatement(condition.rep(), trueBlock.rep(), falseBlock.rep())
+    IfStatement_long(
+      _if,
+      _open,
+      condition,
+      _close,
+      trueBlock,
+      _else,
+      falseBlock
+    ) {
+      return core.ifStatement(
+        condition.rep(),
+        trueBlock.rep(),
+        falseBlock.rep()
+      )
     },
 
-    IfStatement_elsif(_if, _open, condition, _close, trueBlock, _else, elseifStatement) {
-      return core.ifStatement(condition.rep(), trueBlock.rep(), elseifStatement.rep().body)
+    IfStatement_elsif(
+      _if,
+      _open,
+      condition,
+      _close,
+      trueBlock,
+      _else,
+      elseifStatement
+    ) {
+      return core.ifStatement(
+        condition.rep(),
+        trueBlock.rep(),
+        elseifStatement.rep().body
+      )
     },
 
     IfStatement_short(_if, _open, condition, _close, block) {
@@ -155,18 +197,20 @@ export default function analyze(match) {
     },
 
     FuncDecl(_function, id, _open, params, _close, _colon, returnType, block) {
-      const functionEntity = core.functionEntity(id.sourceString, returnType.sourceString)
+      const functionEntity = core.functionEntity(
+        id.sourceString,
+        returnType.sourceString
+      )
       mustNotAlreadyBeDeclared(id.sourceString, { at: id })
       context.add(id.sourceString, functionEntity)
       context = context.newChildContext({ function: functionEntity })
-      params.rep()
+      params.rep() // TODO store it somewhere
       const body = block.rep()
       context = context.parent
       return core.functionDeclaration(functionEntity, body)
     },
-
-    Params(params) {
-      for (const p of params.children) {
+    TypedParams(params) {
+      for (const p of params.asIteration().children) {
         const paramType = p.children[0].sourceString
         const paramName = p.children[1].sourceString
         mustNotAlreadyBeDeclared(paramName, { at: p })
@@ -181,11 +225,11 @@ export default function analyze(match) {
     Block(_open, statements, _close) {
       let previousContext = context
       context = context.newChildContext({})
-      const results = statements.children.map(s => s.rep())
+      const results = statements.children.map((s) => s.rep())
       context = previousContext
       return results
     },
-    
+
     Loop_while(_while, _open, condition, _close, block) {
       let conditionResult = condition.rep()
       let blockResult = block.rep()
@@ -201,32 +245,43 @@ export default function analyze(match) {
     },
 
     Exp1_or(left, _op, right) {
-      return core.binary('||', left.rep(), right.rep())
+      return core.binary("||", left.rep(), right.rep(), "babla")
     },
-  
+
     Exp2_and(left, _op, right) {
-      return core.binary('&&', left.rep(), right.rep())
-    }, 
-    
+      return core.binary("&&", left.rep(), right.rep(), "babla")
+    },
+
     Exp3_compare(left, operator, right) {
-      return core.binary(operator.sourceString, left.rep(), right.rep())
+      return core.binary(
+        operator.sourceString,
+        left.rep(),
+        right.rep(),
+        "babla"
+      )
     },
 
     Exp4_add(left, op, right) {
-      return core.binary(op.sourceString, left.rep(), right.rep())
+      return core.binary(op.sourceString, left.rep(), right.rep(), "ginti")
     },
-  
+
     Exp5_multiply(left, op, right) {
-      return core.binary(op.sourceString, left.rep(), right.rep())
+      return core.binary(op.sourceString, left.rep(), right.rep(), "ginti")
     },
-  
+
     Exp6_power(base, _op, exponent) {
-      return core.binary('**', base.rep(), exponent.rep())
+      return core.binary("**", base.rep(), exponent.rep(), "ginti")
     },
-    
+
     Exp7_parentheses(_open, exp, _close) {
       return exp.rep()
-    }, 
+    },
+
+    Exp7_id(id) {
+      const entity = context.lookup(id.sourceString)
+      mustHaveBeenFound(entity, id.sourceString, { at: id })
+      return entity
+    },
 
     stringlit(_open, chars, _close) {
       return chars.sourceString
@@ -245,9 +300,8 @@ export default function analyze(match) {
     },
 
     _iter(...children) {
-      return children.map(child => child.rep())
-    }
-
+      return children.map((child) => child.rep())
+    },
   })
 
   return builder(match).rep()
