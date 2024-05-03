@@ -1,5 +1,5 @@
 # Sanscript
-
+Sanscript Grammar = https://github.com/anikambhatnagar/Sanscript/blob/main/src/sanscript.ohm
 GitHub Pages Link = https://gauravbasu03.github.io/
 
 Names = Anika Bhatnagar, Ria Singh, Dev Raiyani, Gaurav Basu
