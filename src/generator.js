@@ -58,9 +58,13 @@ export default function generate(program) {
     }
     ,
     */
+   // PrintStatement(s) {
+     // const argument = gen(s.argument)
+      //output.push(`console.log(${argument});`)
+    //},
     PrintStatement(s) {
       const argument = gen(s.argument)
-      output.push(`console.log(${argument});`)
+      output.push(`console.log(${argument || "\"\""});`)
     },
     Assignment(s) {
       output.push(`${targetName(s.target)} = ${gen(s.source)};`)
@@ -78,9 +82,13 @@ export default function generate(program) {
     Conditional(e) {
       return `((${gen(e.test)}) ? (${gen(e.consequent)}) : (${gen(e.alternate)}))`
     },
+    //BinaryExpression(e) {
+     // return `(${gen(e.left)} ${e.op} ${gen(e.right)})`
+    //},
     BinaryExpression(e) {
-      return `(${gen(e.left)} ${e.op} ${gen(e.right)})`
+      return `${gen(e.left)} ${e.op} ${gen(e.right)}`;
     },
+    
     UnaryExpression(e) {
       return `${e.op}(${gen(e.operand)})`
     },
